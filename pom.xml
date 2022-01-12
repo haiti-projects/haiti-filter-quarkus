@@ -15,6 +15,7 @@
     <licenses>
         <license>
             <name>BSD 3-Clause License</name>
+            <url>https://raw.githubusercontent.com/haiti-projects/haiti-filter-reactive-quarkus/master/LICENSE</url>
         </license>
     </licenses>
 

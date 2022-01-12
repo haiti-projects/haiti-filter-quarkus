@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dev.struchkov.haiti.filter.quarkus</groupId>
+    <groupId>dev.struchkov.haiti.filter</groupId>
     <artifactId>haiti-filter-quarkus-reactive</artifactId>
     <version>0.1.0</version>
+    <packaging>jar</packaging>
 
     <name>Haiti Filter Reactive Quarkus</name>
     <description>JOOQ based filtering module</description>
@@ -23,6 +24,11 @@
 
         <quarkus.platform.version>2.5.1.Final</quarkus.platform.version>
         <haiti.filter.jooq.version>0.1.0</haiti.filter.jooq.version>
+
+        <plugin.nexus.staging.ver>1.6.8</plugin.nexus.staging.ver>
+        <plugin.maven.source.ver>3.2.1</plugin.maven.source.ver>
+        <plugin.maven.javadoc.ver>3.3.1</plugin.maven.javadoc.ver>
+        <plugin.maven.gpg.ver>3.0.1</plugin.maven.gpg.ver>
     </properties>
 
     <dependencyManagement>

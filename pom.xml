@@ -6,7 +6,7 @@
 
     <groupId>dev.struchkov.haiti.filter</groupId>
     <artifactId>haiti-filter-quarkus-reactive</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
 
     <name>Haiti Filter Reactive Quarkus</name>
@@ -24,7 +24,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <quarkus.platform.version>2.5.1.Final</quarkus.platform.version>
-        <haiti.filter.jooq.version>0.1.0</haiti.filter.jooq.version>
+        <haiti.filter.jooq.version>0.2.0</haiti.filter.jooq.version>
 
         <plugin.nexus.staging.ver>1.6.8</plugin.nexus.staging.ver>
         <plugin.maven.source.ver>3.2.1</plugin.maven.source.ver>

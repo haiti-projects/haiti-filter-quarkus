@@ -4,6 +4,10 @@ import dev.struchkov.haiti.filter.Filter;
 import dev.struchkov.haiti.filter.FilterQuery;
 import dev.struchkov.haiti.filter.jooq.CriteriaJooqFilter;
 import dev.struchkov.haiti.filter.jooq.JoinTable;
+import dev.struchkov.haiti.filter.jooq.SortContainer;
+import dev.struchkov.haiti.filter.jooq.SortType;
+import dev.struchkov.haiti.filter.jooq.page.PageableOffset;
+import dev.struchkov.haiti.filter.jooq.page.PageableSeek;
 import io.smallrye.mutiny.Multi;
 import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.Row;
@@ -69,13 +73,33 @@ public class CriteriaFilter<T> implements Filter {
         return this;
     }
 
-    public CriteriaFilter<T> page(@NonNull String fieldOrder, Object id, int pageSize) {
-        jooqFilter.page(fieldOrder, id, pageSize);
+    public CriteriaFilter<T> page(@NonNull PageableOffset offset) {
+        jooqFilter.page(offset);
+        return this;
+    }
+
+    public CriteriaFilter<T> page(@NonNull PageableSeek seek) {
+        jooqFilter.page(seek);
         return this;
     }
 
     public CriteriaFilter<T> join(@NonNull JoinTable... joinTables) {
         jooqFilter.join(joinTables);
+        return this;
+    }
+
+    public CriteriaFilter<T> sort(@NonNull SortContainer container) {
+        jooqFilter.sort(container);
+        return this;
+    }
+
+    public CriteriaFilter<T> sort(@NonNull String field, SortType sortType) {
+        jooqFilter.sort(field, sortType);
+        return this;
+    }
+
+    public CriteriaFilter<T> sort(@NonNull String field) {
+        jooqFilter.sort(field);
         return this;
     }
 

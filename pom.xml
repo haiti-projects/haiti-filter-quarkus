@@ -6,7 +6,7 @@
 
     <groupId>dev.struchkov.haiti.filter</groupId>
     <artifactId>haiti-filter-quarkus-reactive</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <packaging>jar</packaging>
 
     <name>Haiti Filter Reactive Quarkus</name>
@@ -18,14 +18,22 @@
             <url>https://raw.githubusercontent.com/haiti-projects/haiti-filter-reactive-quarkus/master/LICENSE</url>
         </license>
     </licenses>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/haiti-projects/haiti-filter-reactive-quarkus/issues</url>
+    </issueManagement>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <quarkus.platform.version>2.5.1.Final</quarkus.platform.version>
-        <haiti.filter.jooq.version>0.2.0</haiti.filter.jooq.version>
+        <haiti.filter.jooq.version>0.3.0</haiti.filter.jooq.version>
 
+        <plugin.maven.compiler.ver>3.9.0</plugin.maven.compiler.ver>
         <plugin.nexus.staging.ver>1.6.8</plugin.nexus.staging.ver>
         <plugin.maven.source.ver>3.2.1</plugin.maven.source.ver>
         <plugin.maven.javadoc.ver>3.3.1</plugin.maven.javadoc.ver>
@@ -54,20 +62,23 @@
             <groupId>io.smallrye.reactive</groupId>
             <artifactId>smallrye-mutiny-vertx-pg-client</artifactId>
         </dependency>
+
+        <!--Все зависимости ниже необходимы только для нативной сборки Quarkus-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>20.1.0</version>
+        </dependency>
     </dependencies>
-
-    <scm>
-        <connection>scm:git:https://github.com/haiti-projects/haiti-filter-reactive-quarkus.git</connection>
-        <url>https://github.com/haiti-projects/haiti-filter-reactive-quarkus</url>
-        <developerConnection>scm:git:https://github.com/haiti-projects/haiti-filter-reactive-quarkus.git</developerConnection>
-    </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <build>
         <pluginManagement>
@@ -81,6 +92,15 @@
                         <serverId>ossrh</serverId>
                         <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                         <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${plugin.maven.compiler.ver}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -136,10 +156,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
@@ -169,6 +193,20 @@
             </build>
         </profile>
     </profiles>
+
+    <scm>
+        <connection>scm:git:https://github.com/haiti-projects/haiti-filter-reactive-quarkus.git</connection>
+        <url>https://github.com/haiti-projects/haiti-filter-reactive-quarkus</url>
+        <developerConnection>scm:git:https://github.com/haiti-projects/haiti-filter-reactive-quarkus.git
+        </developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <developers>
         <developer>

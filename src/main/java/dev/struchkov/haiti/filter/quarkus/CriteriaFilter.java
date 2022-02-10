@@ -1,30 +1,30 @@
 package dev.struchkov.haiti.filter.quarkus;
 
-import dev.struchkov.haiti.filter.Filter;
-import dev.struchkov.haiti.filter.FilterQuery;
 import dev.struchkov.haiti.filter.jooq.CriteriaJooqFilter;
-import dev.struchkov.haiti.filter.jooq.JoinTable;
+import dev.struchkov.haiti.filter.jooq.CriteriaJooqQuery;
 import dev.struchkov.haiti.filter.jooq.SortContainer;
 import dev.struchkov.haiti.filter.jooq.SortType;
 import dev.struchkov.haiti.filter.jooq.page.PageableOffset;
 import dev.struchkov.haiti.filter.jooq.page.PageableSeek;
-import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.Row;
-import lombok.NonNull;
 import org.jooq.DSLContext;
 import org.jooq.Query;
 import org.jooq.conf.ParamType;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class CriteriaFilter<T> implements Filter {
+public class CriteriaFilter<T> {
 
     private final PgPool pgPool;
     private final CriteriaJooqFilter jooqFilter;
     private final Function<Row, T> mapper;
+    private PageableOffset offset;
 
     private CriteriaFilter(PgPool pgPool, String table, DSLContext dslContext, Function<Row, T> mapper) {
         dslContext.settings().withParamType(ParamType.NAMED_OR_INLINED);
@@ -37,81 +37,89 @@ public class CriteriaFilter<T> implements Filter {
         return new CriteriaFilter<>(pgPool, table, dslContext, mapper);
     }
 
-    @Override
-    public Filter and(FilterQuery filterQuery) {
+    public CriteriaFilter<T> and(CriteriaJooqQuery filterQuery) {
         jooqFilter.and(filterQuery);
         return this;
     }
 
-    @Override
-    public Filter and(Consumer<FilterQuery> query) {
+    public CriteriaFilter<T> and(Consumer<CriteriaJooqQuery> query) {
         jooqFilter.and(query);
         return this;
     }
 
-    @Override
-    public Filter or(FilterQuery filterQuery) {
+
+    public CriteriaFilter<T> or(CriteriaJooqQuery filterQuery) {
         jooqFilter.or(filterQuery);
         return this;
     }
 
-    @Override
-    public Filter or(Consumer<FilterQuery> query) {
+    public CriteriaFilter<T> or(Consumer<CriteriaJooqQuery> query) {
         jooqFilter.or(query);
         return this;
     }
 
-    @Override
-    public Filter not(FilterQuery filterQuery) {
-        jooqFilter.not(filterQuery);
-        return this;
-    }
-
-    @Override
-    public Filter not(Consumer<FilterQuery> query) {
-        jooqFilter.not(query);
-        return this;
-    }
-
-    public CriteriaFilter<T> page(@NonNull PageableOffset offset) {
+    public CriteriaFilter<T> page(PageableOffset offset) {
         jooqFilter.page(offset);
+        this.offset = offset;
         return this;
     }
 
-    public CriteriaFilter<T> page(@NonNull PageableSeek seek) {
+    public CriteriaFilter<T> page(PageableSeek seek) {
         jooqFilter.page(seek);
         return this;
     }
 
-    public CriteriaFilter<T> join(@NonNull JoinTable... joinTables) {
-        jooqFilter.join(joinTables);
-        return this;
-    }
-
-    public CriteriaFilter<T> sort(@NonNull SortContainer container) {
+    public CriteriaFilter<T> sort(SortContainer container) {
         jooqFilter.sort(container);
         return this;
     }
 
-    public CriteriaFilter<T> sort(@NonNull String field, SortType sortType) {
+    public CriteriaFilter<T> sort(String field, SortType sortType) {
         jooqFilter.sort(field, sortType);
         return this;
     }
 
-    public CriteriaFilter<T> sort(@NonNull String field) {
+    public CriteriaFilter<T> sort(String field) {
         jooqFilter.sort(field);
         return this;
     }
 
-    @Override
-    public Multi<T> build() {
+    public Uni<List<T>> build() {
         final Query query = jooqFilter.build();
         return pgPool.preparedQuery(query.getSQL())
                 .execute()
-                .onItem()
-                .transformToMulti(rows -> Multi.createFrom().items(
+                .map(rows ->
                         StreamSupport.stream(rows.spliterator(), false)
-                ))
-                .map(mapper);
+                                .map(mapper)
+                                .collect(Collectors.toList())
+                );
     }
+
+    public Uni<Long> count() {
+        final Query query = jooqFilter.count();
+        return pgPool.preparedQuery(query.getSQL())
+                .execute()
+                .map(t -> t.iterator().next().getLong("count"));
+    }
+
+    public Uni<FilterResult<T>> filterResult() {
+        final Uni<Long> count = count();
+        final Uni<List<T>> content = build();
+        return Uni.combine().all()
+                .unis(count, content)
+                .asTuple()
+                .map(
+                        t -> {
+                            final Long totalElements = t.getItem1();
+                            final List<T> results = t.getItem2();
+                            return FilterResult.builder(
+                                            totalElements, results.size(), results
+                                    )
+                                    .page(offset.getPageNumber())
+                                    .totalPages(totalElements / results.size())
+                                    .build();
+                        }
+                );
+    }
+
 }

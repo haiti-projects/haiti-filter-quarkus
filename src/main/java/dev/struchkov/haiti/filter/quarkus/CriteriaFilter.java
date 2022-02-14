@@ -116,7 +116,7 @@ public class CriteriaFilter<T> {
                                             totalElements, results.size(), results
                                     )
                                     .page(offset.getPageNumber())
-                                    .totalPages(totalElements / results.size())
+                                    .totalPages(results.isEmpty() ? offset.getPageNumber() : totalElements / results.size())
                                     .build();
                         }
                 );

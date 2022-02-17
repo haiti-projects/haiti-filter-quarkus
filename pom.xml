@@ -31,7 +31,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <quarkus.platform.version>2.5.1.Final</quarkus.platform.version>
-        <haiti.filter.jooq.version>0.5.0-SNAPSHOT</haiti.filter.jooq.version>
+        <haiti.filter.jooq.version>0.4.0</haiti.filter.jooq.version>
 
         <plugin.maven.compiler.ver>3.9.0</plugin.maven.compiler.ver>
         <plugin.nexus.staging.ver>1.6.8</plugin.nexus.staging.ver>

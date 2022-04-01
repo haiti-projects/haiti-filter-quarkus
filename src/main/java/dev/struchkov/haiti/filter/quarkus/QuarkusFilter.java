@@ -105,7 +105,7 @@ public class QuarkusFilter<ID> {
     }
 
     public Uni<List<ID>> build(Class<ID> idType, String idField) {
-        final Query query = jooqFilter.generateQuery(idField);
+        final Query query = jooqFilter.generateQuery(tableName + "." + idField);
         final String sql = query.getSQL();
         return pgPool.preparedQuery(sql)
                 .execute()
@@ -135,7 +135,7 @@ public class QuarkusFilter<ID> {
     }
 
     public Uni<FilterResult<ID>> filterResult(Class<ID> idType, String idField) {
-        jooqFilter.groupBy(idField);
+        jooqFilter.groupBy(tableName + "." + idField);
         jooqFilter.groupBy(sortFieldNames);
         distinctCount = true;
         final Uni<Long> count = count();

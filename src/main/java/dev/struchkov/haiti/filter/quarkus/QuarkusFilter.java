@@ -7,7 +7,7 @@ import dev.struchkov.haiti.filter.jooq.page.PageableOffset;
 import dev.struchkov.haiti.filter.jooq.page.PageableSeek;
 import dev.struchkov.haiti.filter.jooq.sort.SortContainer;
 import dev.struchkov.haiti.filter.jooq.sort.SortType;
-import dev.struchkov.haiti.utils.Assert;
+import dev.struchkov.haiti.utils.Inspector;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.pgclient.PgPool;
 import org.jooq.DSLContext;
@@ -64,7 +64,7 @@ public class QuarkusFilter<ID> {
     }
 
     public QuarkusFilter<ID> join(JoinTable... joinTables) {
-        Assert.isNotNull(joinTables);
+        Inspector.isNotNull(joinTables);
         jooqFilter.join(joinTables);
         return this;
     }

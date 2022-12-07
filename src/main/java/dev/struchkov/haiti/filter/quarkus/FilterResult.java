@@ -1,6 +1,6 @@
 package dev.struchkov.haiti.filter.quarkus;
 
-import dev.struchkov.haiti.utils.Assert;
+import dev.struchkov.haiti.utils.Inspector;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class FilterResult<T> {
             Integer elements,
             List<T> content
     ) {
-        Assert.isNotNull(totalElements, elements, content);
+        Inspector.isNotNull(totalElements, elements, content);
         return new FilterResult.Builder<>(totalElements, elements, content);
     }
 

@@ -4,7 +4,7 @@
 
     <groupId>dev.struchkov.haiti.filter</groupId>
     <artifactId>haiti-filter-quarkus-reactive</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Haiti Filter Reactive Quarkus</name>
@@ -28,8 +28,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <quarkus.platform.version>2.16.3.Final</quarkus.platform.version>
-        <haiti.filter.jooq.version>1.0.0</haiti.filter.jooq.version>
+        <quarkus.platform.version>3.0.3.Final</quarkus.platform.version>
+        <haiti.filter.jooq.version>1.1.0</haiti.filter.jooq.version>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <postgresql.ver>42.6.0</postgresql.ver>
+        <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
+        <jetbrains.annotations.ver>24.0.1</jetbrains.annotations.ver>
 
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
         <plugin.maven.compiler.ver>3.11.0</plugin.maven.compiler.ver>
@@ -40,9 +44,9 @@
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
         <plugin.maven.javadoc.ver>3.5.0</plugin.maven.javadoc.ver>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin -->
-        <plugin.maven.gpg.ver>3.0.1</plugin.maven.gpg.ver>
+        <plugin.maven.gpg.ver>3.1.0</plugin.maven.gpg.ver>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-release-plugin -->
-        <plugin.maven.release.ver>3.0.0-M7</plugin.maven.release.ver>
+        <plugin.maven.release.ver>3.0.0</plugin.maven.release.ver>
     </properties>
 
     <dependencyManagement>
@@ -72,7 +76,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.0</version>
+            <version>${postgresql.ver}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
@@ -81,7 +85,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>23.0.0</version>
+            <version>${jetbrains.annotations.ver}</version>
         </dependency>
     </dependencies>
 

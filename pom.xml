@@ -312,7 +312,7 @@
         <url>https://github.com/haiti-projects/haiti-filter-reactive-quarkus</url>
         <developerConnection>scm:git:https://github.com/haiti-projects/haiti-filter-reactive-quarkus.git
         </developerConnection>
-      <tag>HEAD</tag>
+        <tag>HEAD</tag>
   </scm>
 
     <developers>

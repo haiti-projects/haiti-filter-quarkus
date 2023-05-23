@@ -4,7 +4,7 @@
 
     <groupId>dev.struchkov.haiti.filter</groupId>
     <artifactId>haiti-filter-quarkus-reactive</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>Haiti Filter Reactive Quarkus</name>

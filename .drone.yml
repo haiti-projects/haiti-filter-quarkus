@@ -13,9 +13,8 @@ volumes:
       path: /drone/volume/m2
 
 steps:
-
   - name: publish
-    image: maven:3.8.5-openjdk-17
+    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
     privileged: true
     volumes:
       - name: m2
@@ -27,6 +26,8 @@ steps:
       - echo "$MAVEN_SETTINGS" >> maven-settings.xml
       - mvn --settings maven-settings.xml -U -P snapshot clean deploy
 
+image_pull_secrets:
+  - DOCKER_AUTH
 ---
 kind: pipeline
 type: docker
@@ -44,7 +45,7 @@ volumes:
 steps:
 
   - name: publish maven central
-    image: maven:3.8.5-openjdk-17
+    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
     privileged: true
     volumes:
       - name: m2
@@ -62,6 +63,8 @@ steps:
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
       - mvn --settings maven-settings.xml -U -P ossrh,release clean deploy
 
+image_pull_secrets:
+  - DOCKER_AUTH
 ---
 kind: pipeline
 type: docker
@@ -79,7 +82,7 @@ volumes:
 steps:
 
   - name: publish struchkov nexus
-    image: maven:3.8.5-openjdk-17
+    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
     privileged: true
     volumes:
       - name: m2
@@ -97,8 +100,10 @@ steps:
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
       - mvn --settings maven-settings.xml -U -P ossrh,release-struchkov-nexus clean deploy
 
+image_pull_secrets:
+  - DOCKER_AUTH
 ---
 kind: signature
-hmac: e1c7d048e5af7cc1d54a07af78193e5671d3d1f0632dc487f9be8095923af820
+hmac: d0fe9931c55821829b3499a23ae900647db638512cf62edaa878ada955f52b9a
 
 ...

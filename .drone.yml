@@ -45,7 +45,7 @@ volumes:
 steps:
 
   - name: publish maven central
-    image: hub.docker.struchkov.dev/maven:3.9.6-eclipse-temurin-17
+    image: hub.docker.struchkov.dev/maven:3.9.6-eclipse-temurin-17-alpine
     privileged: true
     volumes:
       - name: m2
@@ -58,6 +58,7 @@ steps:
       GPG_PASSPHRASE:
         from_secret: GPG_PASSPHRASE
     commands:
+      - apk add --no-cache gnupg
       - echo "$GPG_PRIVATE_KEY" >> gpg.key
       - echo "$MAVEN_SETTINGS" >> maven-settings.xml
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
@@ -82,7 +83,7 @@ volumes:
 steps:
 
   - name: publish struchkov nexus
-    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17
+    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
     privileged: true
     volumes:
       - name: m2
@@ -95,6 +96,7 @@ steps:
       GPG_PASSPHRASE:
         from_secret: GPG_PASSPHRASE
     commands:
+      - apk add --no-cache gnupg
       - echo "$GPG_PRIVATE_KEY" >> gpg.key
       - echo "$MAVEN_SETTINGS" >> maven-settings.xml
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
@@ -104,6 +106,6 @@ image_pull_secrets:
   - DOCKER_AUTH
 ---
 kind: signature
-hmac: 5ce3e381ed9fa12673ccb654e1c108f8c73d0ffeda0d133807fe36c0449ab770
+hmac: 5a61d8c658a4be1aa3afed536582b5905bb044ad1269bc8734e7f63b31572f1f
 
 ...

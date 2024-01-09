@@ -10,13 +10,16 @@ import dev.struchkov.haiti.filter.jooq.sort.SortType;
 import dev.struchkov.haiti.utils.Inspector;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.pgclient.PgPool;
+import io.vertx.mutiny.sqlclient.Row;
 import org.jooq.DSLContext;
 import org.jooq.Query;
 import org.jooq.conf.ParamType;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -103,16 +106,23 @@ public class QuarkusFilter<ID> {
         return this;
     }
 
-    public Uni<List<ID>> build(Class<ID> idType, String idField) {
-        final Query query = jooqFilter.generateQuery(tableName + "." + idField);
+    public Uni<List<ID>> build(Function<Row, ID> mapper, String... idFields) {
+        final Query query = jooqFilter.generateQuery(Arrays.stream(idFields).map(field -> tableName + "." + field).toArray(String[]::new));
         final String sql = query.getSQL();
         return pgPool.preparedQuery(sql)
                 .execute()
                 .map(rows ->
                         StreamSupport.stream(rows.spliterator(), false)
-                                .map(row -> row.get(idType, idField))
+                                .map(mapper)
                                 .collect(Collectors.toList())
                 );
+    }
+
+    public Uni<List<ID>> build(Class<ID> idType, String idField) {
+        return build(
+                row -> row.get(idType, idField),
+                idField
+        );
     }
 
     public Uni<Long> count() {
@@ -133,12 +143,14 @@ public class QuarkusFilter<ID> {
                 });
     }
 
-    public Uni<FilterResult<ID>> filterResult(Class<ID> idType, String idField) {
-        jooqFilter.groupBy(tableName + "." + idField);
+    public Uni<FilterResult<ID>> filterResult(Function<Row, ID> mapper, String... idFields) {
+        for (String idField : idFields) {
+            jooqFilter.groupBy(tableName + "." + idField);
+        }
 //        jooqFilter.groupBy(sortFieldNames);
         distinctCount = true;
         final Uni<Long> count = count();
-        final Uni<List<ID>> content = build(idType, idField);
+        final Uni<List<ID>> content = build(mapper, idFields);
         return Uni.combine().all()
                 .unis(count, content)
                 .asTuple()
@@ -154,6 +166,13 @@ public class QuarkusFilter<ID> {
                                     .build();
                         }
                 );
+    }
+
+    public Uni<FilterResult<ID>> filterResult(Class<ID> idType, String idField) {
+        return filterResult(
+                row -> row.get(idType, idField),
+                idField
+        );
     }
 
 }

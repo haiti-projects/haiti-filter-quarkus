@@ -45,7 +45,7 @@ volumes:
 steps:
 
   - name: publish maven central
-    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
+    image: hub.docker.struchkov.dev/maven:3.9.6-eclipse-temurin-17
     privileged: true
     volumes:
       - name: m2
@@ -82,7 +82,7 @@ volumes:
 steps:
 
   - name: publish struchkov nexus
-    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
+    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17
     privileged: true
     volumes:
       - name: m2
@@ -104,6 +104,6 @@ image_pull_secrets:
   - DOCKER_AUTH
 ---
 kind: signature
-hmac: d0fe9931c55821829b3499a23ae900647db638512cf62edaa878ada955f52b9a
+hmac: 5ce3e381ed9fa12673ccb654e1c108f8c73d0ffeda0d133807fe36c0449ab770
 
 ...

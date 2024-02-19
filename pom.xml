@@ -28,7 +28,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <quarkus.platform.version>3.0.3.Final</quarkus.platform.version>
+        <quarkus.platform.version>3.4.3</quarkus.platform.version>
         <haiti.filter.jooq.version>1.1.0</haiti.filter.jooq.version>
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <postgresql.ver>42.6.0</postgresql.ver>

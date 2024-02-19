@@ -15,6 +15,7 @@ import org.jooq.DSLContext;
 import org.jooq.Query;
 import org.jooq.conf.ParamType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class QuarkusFilter<ID> {
     private final PgPool pgPool;
     private final CriteriaJooqFilter jooqFilter;
     private PageableOffset offset;
-//    private final List<String> sortFieldNames = new ArrayList<>();
+    private final List<String> sortFieldNames = new ArrayList<>();
 
     private QuarkusFilter(PgPool pgPool, String table, DSLContext dslContext) {
         dslContext.settings().withParamType(ParamType.NAMED_OR_INLINED);
@@ -85,7 +86,7 @@ public class QuarkusFilter<ID> {
     public QuarkusFilter<ID> sort(SortContainer container) {
         if (container != null && container.getFieldName() != null) {
             jooqFilter.sort(container);
-//            sortFieldNames.add(container.getFieldName());
+            sortFieldNames.add(container.getFieldName());
         }
         return this;
     }
@@ -93,7 +94,7 @@ public class QuarkusFilter<ID> {
     public QuarkusFilter<ID> sort(String field, SortType sortType) {
         if (field != null) {
             jooqFilter.sort(field, sortType);
-//            sortFieldNames.add(field);
+            sortFieldNames.add(field);
         }
         return this;
     }
@@ -101,7 +102,7 @@ public class QuarkusFilter<ID> {
     public QuarkusFilter<ID> sort(String field) {
         if (field != null) {
             jooqFilter.sort(field);
-//            sortFieldNames.add(field);
+            sortFieldNames.add(field);
         }
         return this;
     }
@@ -147,7 +148,7 @@ public class QuarkusFilter<ID> {
         for (String idField : idFields) {
             jooqFilter.groupBy(tableName + "." + idField);
         }
-//        jooqFilter.groupBy(sortFieldNames);
+        jooqFilter.groupBy(sortFieldNames);
         distinctCount = true;
         final Uni<Long> count = count();
         final Uni<List<ID>> content = build(mapper, idFields);
